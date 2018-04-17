@@ -9,7 +9,6 @@ public class TransitionSwipe : TransitionBase
     private GameObject _image;
 
     private Vector2 _startPosition, _middlePosition, _endPosition;
-
     private Vector2 _nextPosition, _currentPosition;
 
     // Use this for initialization
@@ -39,9 +38,7 @@ public class TransitionSwipe : TransitionBase
         while (progress < 1f)
         {
             progress += Time.deltaTime / _transitionDuration;
-
             _image.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_currentPosition, _nextPosition, _animationCurve.Evaluate(progress));
-
             yield return null;
         }
 
