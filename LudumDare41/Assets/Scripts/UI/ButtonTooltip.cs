@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ButtonTooltip : MonoBehaviour
+public class ButtonTooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     public GameObject toolTipObject;
 
-    public void OnMouseOver()
-    {
-        toolTipObject.SetActive(true);
-    }
-
-    public void OnMouseExit()
+    public void OnPointerExit(PointerEventData eventData)
     {
         toolTipObject.SetActive(false);
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        toolTipObject.SetActive(true);
     }
 }

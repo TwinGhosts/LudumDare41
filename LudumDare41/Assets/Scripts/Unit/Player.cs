@@ -65,6 +65,12 @@ public class Player : UnitBase
                 _playerCharacterSprite.sprite = _archerSprite;
                 break;
         }
+
+        Stats.maxHealth += Util.PlayerStats.levelUpHealth * Util.PlayerStats.level;
+        Stats.maxMana += Util.PlayerStats.levelUpMana * Util.PlayerStats.level;
+
+        Stats.health = Stats.maxHealth;
+        Stats.mana = Stats.maxMana;
     }
 
     protected override void Update()
@@ -99,7 +105,6 @@ public class Player : UnitBase
     {
         isDying = true;
         var ps = GetComponentInChildren<ParticleSystem>();
-        GetComponent<SpriteRenderer>().enabled = false;
         _playerCharacterSprite.enabled = false;
         ps.Play();
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -174,6 +179,7 @@ public class Player : UnitBase
             if (Stats.health <= 0f && !isDying)
             {
                 StartCoroutine(Lose());
+                Stats.maxMovementSpeed = 0.1f;
             }
         }
         else

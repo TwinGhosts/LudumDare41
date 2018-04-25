@@ -106,13 +106,13 @@ public class ClassArcher : ClassBase
 
         _abilityCooldownsMax.Add(0.5f);
         _abilityCooldownsMax.Add(8f);
-        _abilityCooldownsMax.Add(5f);
+        _abilityCooldownsMax.Add(8f);
         _abilityCooldownsMax.Add(10f);
 
         _manaCost.Add(0f);
+        _manaCost.Add(10f);
+        _manaCost.Add(6f);
         _manaCost.Add(8f);
-        _manaCost.Add(5f);
-        _manaCost.Add(5f);
 
         GetComponent<UnitBase>().Stats.health = 40f;
         GetComponent<UnitBase>().Stats.maxHealth = 40f;
