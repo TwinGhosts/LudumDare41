@@ -14,8 +14,14 @@ public abstract class TransitionBase : MonoBehaviour
     [SerializeField]
     protected AnimationCurve _animationCurve;
 
-    protected void NextLevel()
+    public void Quit()
     {
+        Application.Quit();
+    }
+
+    public void NextLevel()
+    {
+        Time.timeScale = 1f;
         if (SceneManager.sceneCountInBuildSettings + 1 < SceneManager.GetActiveScene().buildIndex + 1)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -26,13 +32,15 @@ public abstract class TransitionBase : MonoBehaviour
         }
     }
 
-    protected void SwitchLevel(int index)
+    public void SwitchLevel(int index)
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(index);
     }
 
-    protected void SwitchLevel(string index)
+    public void SwitchLevel(string index)
     {
+        Time.timeScale = 1f;
         SceneManager.LoadScene(index);
     }
 

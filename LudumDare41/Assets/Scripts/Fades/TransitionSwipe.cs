@@ -32,6 +32,7 @@ public class TransitionSwipe : TransitionBase
 
     public IEnumerator _Transition(bool fadeIn, TransitionSwipeEndPosition endPosType, SceneManagementTypes? type = null, int? index = null, string sceneName = null)
     {
+        Time.timeScale = 1f;
         SetPosBasedOnEnum(endPosType);
 
         var progress = 0f;

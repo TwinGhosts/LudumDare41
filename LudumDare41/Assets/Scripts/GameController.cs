@@ -1,48 +1,119 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameController : MonoBehaviour
 {
-    public static GameState GameState = GameState.PLAYING;
+    public static GameState GameState = GameState.CINEMATIC;
+    public static Difficulty Difficulty = Difficulty.NORMAL;
+
+    private static float pMs = 0f;
 
     private bool _isPaused = false;
-    private float _previousTimeScale = 1f;
-    private float _standardTimeScale = 1f;
+
+    public GameObject pauseCanvas;
+    public GameObject loseCanvas;
+
+    public UnityEvent OnWin;
+
+    [SerializeField]
+    private AnimationCurve _introCurve;
 
     // Use this for initialization
-    private void Start()
+    private void Awake()
     {
+        GameState = GameState.CINEMATIC;
         Util.GameController = this;
     }
 
-    // Update is called once per frame
+    private IEnumerator Start()
+    {
+        yield return StartCoroutine(IntroCinematic());
+        GameState = GameState.PLAYING;
+    }
+
+    public void Lose()
+    {
+        Time.timeScale = 0;
+    }
+
     private void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            PauseToggle();
+        }
     }
 
-    private void PauseToggle()
+    public void Pause(bool pause)
     {
-        if (!_isPaused)
+        if (GameState == GameState.PLAYING || GameState == GameState.PAUSED)
         {
-            _previousTimeScale = Time.timeScale;
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            Time.timeScale = _previousTimeScale;
-        }
+            pauseCanvas.SetActive(pause);
 
-        _isPaused = !_isPaused;
+            if (!_isPaused)
+            {
+                pMs = Util.Player.Stats.movementSpeed;
+                GameState = GameState.PAUSED;
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Util.Player.Stats.movementSpeed = pMs;
+                Time.timeScale = 1f;
+                GameState = GameState.PLAYING;
+            }
+
+            _isPaused = pause;
+        }
     }
 
-    private void GameTimeChange(bool forward)
+    public void PauseToggle()
     {
-        _previousTimeScale = Time.timeScale;
+        if (GameState == GameState.PLAYING || GameState == GameState.PAUSED)
+        {
+            if (!_isPaused)
+            {
+                pMs = Util.Player.Stats.movementSpeed;
+                GameState = GameState.PAUSED;
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Util.Player.Stats.movementSpeed = pMs;
+                Time.timeScale = 1f;
+                GameState = GameState.PLAYING;
+            }
 
-        Time.timeScale = (forward) ? Time.timeScale++ : Time.timeScale--;
-        Time.timeScale = Mathf.Clamp(Time.timeScale, 0f, 5f);
+            _isPaused = !_isPaused;
+            pauseCanvas.SetActive(_isPaused);
+        }
+    }
+
+    public IEnumerator IntroCinematic()
+    {
+        yield return new WaitForSeconds(1f);
+        yield return StartCoroutine(MovePlayer());
+
+        GameState = GameState.PLAYING;
+    }
+
+    public IEnumerator MovePlayer()
+    {
+        var duration = 1f;
+        var progress = 0f;
+        var startPosition = Util.Player.transform.position;
+        var endPosition = Camera.main.transform.position;
+
+        while (progress < 1f)
+        {
+            Util.Player.transform.position = Vector2.Lerp(startPosition, endPosition, _introCurve.Evaluate(progress));
+            progress += Time.deltaTime / duration;
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(0.225f);
     }
 }
 
@@ -51,6 +122,4 @@ public enum GameState
     PLAYING,
     PAUSED,
     CINEMATIC,
-    WIN,
-    LOSE,
 }

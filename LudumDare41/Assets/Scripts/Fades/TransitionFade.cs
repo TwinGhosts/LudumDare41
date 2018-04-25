@@ -21,6 +21,7 @@ public class TransitionFade : TransitionBase
 
     public override IEnumerator _Transition(bool fadeIn, SceneManagementTypes? type = null, int? index = null, string sceneName = null)
     {
+        Time.timeScale = 1f;
         var progress = 0f;
         var color = _image.color;
         while (progress < 1f)

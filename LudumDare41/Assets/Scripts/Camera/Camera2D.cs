@@ -19,19 +19,6 @@ public class Camera2D : MonoBehaviour
     [SerializeField]
     private AnimationCurve _motionCurve;
 
-    [SerializeField]
-    private float _boundsWidth = 15f;
-    [SerializeField]
-    private float _boundsHeight = 10f;
-    [SerializeField]
-    private Vector2 _centerPoint = Vector2.zero;
-
-    private float _scrollSpeed = 400f;
-    [SerializeField]
-    private float _zoomMin = 4f;
-    [SerializeField]
-    private float _zoomMax = 10f;
-
     private Vector2 _screenShakeAmount = Vector2.zero;
 
     private Vector3 _velocity = Vector3.zero;
@@ -59,8 +46,8 @@ public class Camera2D : MonoBehaviour
             // When there is a target and no shake
             if (_target && !_isShaking)
             {
-                Vector3 delta = _target.position - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, transform.position.z));
-                Vector3 destination = transform.position + delta;
+                var delta = _target.position - Camera.main.ViewportToWorldPoint(new Vector3(0.5f, 0.5f, transform.position.z));
+                var destination = transform.position + delta;
 
                 transform.position = Vector3.SmoothDamp(transform.position, destination, ref _velocity, _dampTime);
                 transform.position = new Vector3(transform.position.x, transform.position.y, _zDepth);
@@ -68,31 +55,22 @@ public class Camera2D : MonoBehaviour
             // When there is a target and there is shaking, dont damp the motion
             else if (_target && _isShaking)
             {
-                transform.position = new Vector3(_target.position.x + _screenShakeAmount.x, _target.position.y + _screenShakeAmount.y, _zDepth);
+                transform.position = new Vector3(_screenShakeAmount.x, _target.position.y + _screenShakeAmount.y, _zDepth);
             }
             // Revert to the default target when there is none
             else if (!_target)
             {
                 _target = _standardCameraObject;
             }
-
-            var scroll = Input.GetAxis("Mouse ScrollWheel");
-            if (scroll != 0f && GameController.GameState == GameState.PLAYING)
-            {
-                Camera.main.orthographicSize -= scroll * Time.deltaTime * _scrollSpeed;
-                Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize, _zoomMin, _zoomMax);
-            }
         }
+
+        var y = transform.position.y;
+        y = Mathf.Clamp(y, 0f, 100000f);
+        transform.position = new Vector3(transform.position.x, y, transform.position.z);
     }
 
     public void SetTarget(Transform target)
     {
         _target = target;
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(_centerPoint, new Vector3(_boundsWidth, _boundsHeight));
     }
 }
