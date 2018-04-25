@@ -35,7 +35,7 @@ public class ClassArcher : ClassBase
         arrow.GoToMouse(true);
         arrow.SetAngle(finalAngle);
         arrow.Damage = stats.attackPower;
-        arrow.Speed = 7.5f + stats.level * 0.15f;
+        arrow.Speed = 8.5f + stats.level * 0.125f;
     }
 
     // 360 poison arrow shot, speed and arrowCount increase with levels
